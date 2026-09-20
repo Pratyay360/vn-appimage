@@ -11,3 +11,6 @@ Exec=vn-editor %F
 StartupWMClass=vn_editor.exe
 Categories=Utility;
 MimeType=
+X-AppImage-Name=vn-editor
+X-AppImage-Version=UNKNOWN
+X-AppImage-Arch=x86_64
