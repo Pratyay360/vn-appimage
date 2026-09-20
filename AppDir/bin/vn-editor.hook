@@ -340,8 +340,8 @@ if [ -n "$TRICKS" ] && [ ! -f "$WINEPREFIX/.tricks-applied" ]; then
 	fi
 fi
 
-export INSTALL_URL="${INSTALL_URL:-https://fw-download.ubnt.com/data/vn-desktop-app/7d10-windows-0.4.2-bc374063-d84a-42c4-bcb2-eced5b125c95.exe}"
-export RUN_EXE="${RUN_EXE:-vn_editor.exe}"
+export INSTALL_URL="${INSTALL_URL:-}"
+export RUN_EXE="${RUN_EXE:-}"
 # Space-separated silent flags for .exe/.msi runtime install (patched by
 # make-appimage.sh). Empty → type-specific defaults in _app_install_payload.
 INSTALL_FLAGS="${INSTALL_FLAGS:-}"

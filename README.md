@@ -40,3 +40,18 @@ Self-updater is disabled by default if AppImage managers like [am](https://githu
 **VN Editor** is the Ubiquiti video editor application, packaged as a portable AppImage using Wine.
 
 More at: [AnyLinux-AppImages](https://pkgforge-dev.github.io/Anylinux-AppImages/)
+
+---
+
+## How it's built
+
+The Windows payload is extracted from the official installer **at build time**, so the AppImage ships the app itself (~805 MB compressed) and needs no network on first launch:
+
+1. `wget` the installer `.exe` from Ubiquiti
+2. `7z x -tzip` — the installer is a PE that embeds a ZIP archive
+3. `msiextract` (msitools) — the app lives inside the embedded `VN.msi`, whose cab media uses obfuscated `filXXX` names; the MSI File table restores the real names
+4. The resulting `VN/` tree is flattened into `AppDir/share/vn-editor`
+
+Wine itself is not bundled — on first launch the AppImage downloads [pkgforge-dev/wine-AppImage](https://github.com/pkgforge-dev/wine-AppImage) (one-time), creates a prefix in `~/.local/share/wine-appimage/apps/vn-editor/` and syncs the payload into it.
+
+The final DWARFS compression uses reduced memory settings (`DWARFS_COMP="zstd:level=19 -N 3 -W 4"`) because mkdwarfs' defaults OOM on machines with ~5 GB free RAM — see `make-appimage.sh`.

@@ -69,6 +69,15 @@ WINEPREFIX_SUBDIR=".wine"
 # finds or downloads pkgforge-dev/wine-AppImage at runtime. Override with
 # WINE_APPIMAGE_PATH if needed. Do not copy wine/wineserver into AppDir/bin.
 
+# DWARFS compression for the final AppImage. The payload is ~1.2 GB and
+# mkdwarfs' defaults (zstd:level=22, 12 writer workers, 12 MB hash windows)
+# get OOM-killed on machines with ~5 GB free RAM — which silently truncates
+# the AppImage to a few MB. Fewer workers + lower level trades a little
+# compression ratio for reliability. Override via env if your build box has
+# RAM to spare (e.g. DWARFS_COMP="zstd:level=22 -N 8 -W 12").
+DWARFS_COMP="${DWARFS_COMP:-zstd:level=19 -N 3 -W 4}"
+export DWARFS_COMP
+
 # Only for patching desktop file
 GENERIC_NAME="Wine Application" # example: Audio player
 COMMENT_NAME="Wine-packaged Windows application" # example: Simple and powerful audio player
@@ -130,6 +139,69 @@ MIMETYPES_NAME="" # example: audio/aac;audio/x-mp3;
 # mkdir -p "AppDir/share"
 # cp "payload/MyApp-Setup.exe" "AppDir/share/MyApp-Setup.exe"
 # # Then in APPNAME.hook: INSTALL_URL="$APPDIR/share/MyApp-Setup.exe"
+
+# --- This app's payload: build-time extraction (ACTIVE) -------------------
+# VN Editor's .exe is a PE that embeds a ZIP archive, and the actual app
+# files live inside the embedded VN.msi (WiX build, cab media with
+# obfuscated filXXX names). Three-step extraction at build time:
+#   1. wget the installer .exe
+#   2. 7z x -tzip    → pulls VN.msi out of the PE
+#   3. msiextract    → restores real file names from the MSI File table
+# Result goes into AppDir/share/$APPNAME (flat) so the launcher finds
+# $MAIN_EXE at $APP_HOME on first launch (see the thin launcher's
+# candidate list). Needs `msitools` (msiextract) — see get-dependencies.sh.
+PAYLOAD_URL="https://fw-download.ubnt.com/data/vn-desktop-app/7d10-windows-0.4.2-bc374063-d84a-42c4-bcb2-eced5b125c95.exe"
+
+if [ -n "$PAYLOAD_URL" ]; then
+	# Reuse a pre-downloaded installer.exe if present (local re-runs);
+	# CI starts fresh so it always downloads.
+	[ -s installer.exe ] || wget -q "$PAYLOAD_URL" -O installer.exe
+	[ -s installer.exe ] || {
+		echo "ERROR: failed to download the installer from $PAYLOAD_URL" >&2
+		exit 1
+	}
+
+	_pkg_tmp="$(pwd)/.payload-extract"
+	rm -rf "$_pkg_tmp"
+	mkdir -p "AppDir/share/$APPNAME" "$_pkg_tmp"
+
+	# Step 1: the outer exe is a PE with an embedded ZIP — force -tzip.
+	7z x -aos -tzip installer.exe -o"$_pkg_tmp" >/dev/null || {
+		echo "ERROR: 7z failed to extract the installer's embedded ZIP" >&2
+		exit 1
+	}
+	rm -f installer.exe
+
+	# Step 2: the app lives inside VN.msi — msiextract (msitools) maps the
+	# obfuscated cab names back to the real file names via the File table.
+	if [ ! -f "$_pkg_tmp/VN.msi" ]; then
+		echo "ERROR: VN.msi not found in the installer's embedded ZIP" >&2
+		exit 1
+	fi
+	msiextract -C "$_pkg_tmp" "$_pkg_tmp/VN.msi" >/dev/null || {
+		echo "ERROR: msiextract failed to unpack VN.msi (is msitools installed?)" >&2
+		exit 1
+	}
+	rm -f "$_pkg_tmp/VN.msi"
+
+	# Flatten the VN/ tree into AppDir/share/$APPNAME so the thin launcher's
+	# flat-path candidate ($APP_HOME/$MAIN_EXE) hits after the hook syncs it.
+	mv "$_pkg_tmp/VN/"* "AppDir/share/$APPNAME"/
+	rm -rf "$_pkg_tmp"
+
+	# Installer artifacts inside the MSI — not needed to run the app
+	# (the VC runtime DLLs are already in the payload).
+	rm -f "AppDir/share/$APPNAME/VnSetup.exe" \
+		"AppDir/share/$APPNAME/vc_redist.x64.exe"
+
+	# Fail loudly instead of shipping an empty AppImage.
+	[ -f "AppDir/share/$APPNAME/$MAIN_EXE" ] || {
+		echo "ERROR: $MAIN_EXE not found in AppDir/share/$APPNAME after extraction" >&2
+		echo "       check the extraction steps above" >&2
+		exit 1
+	}
+	echo "Payload extracted: $(du -sh "AppDir/share/$APPNAME" | cut -f1) in AppDir/share/$APPNAME"
+fi
 
 # App assets already live under AppDir/ (same layout as other pkgforge templates):
 #   AppDir/bin/APPNAME.hook   AppDir/bin/APPNAME

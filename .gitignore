@@ -1,0 +1,22 @@
+# Build artifacts — never commit these
+dist/
+/installer.exe
+/.payload-extract/
+/squashfs-root/
+/appinfo
+build.log
+
+# Extracted Windows payload (created by make-appimage.sh at build time;
+# ~1.2 GB, re-created on every CI build)
+/AppDir/share/
+
+# quick-sharun / appimagetool outputs (regenerated on every build)
+/AppDir/.DirIcon
+/AppDir/.env
+/AppDir/AppRun
+/AppDir/AppRun.lib
+/AppDir/AppRun.sh
+/AppDir/sharun
+/AppDir/lib/
+/AppDir/shared/
+/AppDir/bin/10-self-updater.hook
