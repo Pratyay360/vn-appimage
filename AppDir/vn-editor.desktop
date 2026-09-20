@@ -1,13 +1,13 @@
 [Desktop Entry]
-Name=vlog-now
+Name=vn-editor
 GenericName=Wine Application
 Comment=Wine-packaged Windows application
 Type=Application
 Terminal=false
 Encoding=UTF-8
 Version=0.4.2
-Icon=vlog-now
-Exec=vlog-now %F
-StartupWMClass=VN.exe
+Icon=vn-editor
+Exec=vn-editor %F
+StartupWMClass=vn_editor.exe
 Categories=Utility;
 MimeType=

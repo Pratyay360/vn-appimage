@@ -1,19 +1,19 @@
 <div align="center">
 
-# vlog-now AppImage 🍷🐧
+# VN Editor AppImage 🎬🍷🐧
 
-[![GitHub Downloads](https://img.shields.io/github/downloads/pkgforge-dev/vlog-now/total?logo=github&label=GitHub%20Downloads)](https://github.com/pkgforge-dev/vlog-now/releases/latest)
-[![CI Build Status](https://github.com/pkgforge-dev/vlog-now/actions/workflows/appimage.yml/badge.svg)](https://github.com/pkgforge-dev/vlog-now/actions)
-[![Latest Stable Release](https://img.shields.io/github/v/release/pkgforge-dev/vlog-now)](https://github.com/pkgforge-dev/vlog-now/releases/latest)
+[![GitHub Downloads](https://img.shields.io/github/downloads/pkgforge-dev/vn-editor/total?logo=github&label=GitHub%20Downloads)](https://github.com/pkgforge-dev/vn-editor/releases/latest)
+[![CI Build Status](https://github.com/pkgforge-dev/vn-editor/actions/workflows/appimage.yml/badge.svg)](https://github.com/pkgforge-dev/vn-editor/actions)
+[![Latest Stable Release](https://img.shields.io/github/v/release/pkgforge-dev/vn-editor)](https://github.com/pkgforge-dev/vn-editor/releases/latest)
 
 <p align="center">
-  <img src="AppDir/vlog-now.svg" width="128" />
+  <img src="AppDir/vn-editor.svg" width="128" />
 </p>
 
 
 | Latest Stable Release | Upstream URL |
 | :---: | :---: |
-| [Click here](https://github.com/pkgforge-dev/vlog-now/releases/latest) | [Ubiquiti VN Desktop](https://www.ui.com/) |
+| [Click here](https://github.com/pkgforge-dev/vn-editor/releases/latest) | [Ubiquiti VN Editor](https://www.ui.com/) |
 
 </div>
 
@@ -37,6 +37,6 @@ Self-updater is disabled by default if AppImage managers like [am](https://githu
 
 ---
 
-**vlog-now** is the Ubiquiti VN Desktop application, packaged as a portable AppImage using Wine.
+**VN Editor** is the Ubiquiti video editor application, packaged as a portable AppImage using Wine.
 
 More at: [AnyLinux-AppImages](https://pkgforge-dev.github.io/Anylinux-AppImages/)

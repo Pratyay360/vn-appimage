@@ -19,12 +19,12 @@ else
 fi
 
 # APP
-_APP_NAME="vlog-now"
+_APP_NAME="vn-editor"
 _APP_VER="0.4.2"
 _APP_REAL="$APPDIR/share/$_APP_NAME"
 _APP_HOME="$DATADIR/wine-appimage/apps/$_APP_NAME"
 export DATADIR
-_APP_BIN="VN.exe"
+_APP_BIN="vn_editor.exe"
 _APP_ICOD="$DATADIR/applications/$_APP_NAME.desktop"
 _APP_ICON_FIX="$DATADIR/applications/fix_icon_wine_$_APP_NAME.desktop"
 
@@ -341,7 +341,7 @@ if [ -n "$TRICKS" ] && [ ! -f "$WINEPREFIX/.tricks-applied" ]; then
 fi
 
 export INSTALL_URL="${INSTALL_URL:-https://fw-download.ubnt.com/data/vn-desktop-app/7d10-windows-0.4.2-bc374063-d84a-42c4-bcb2-eced5b125c95.exe}"
-export RUN_EXE="${RUN_EXE:-VN.exe}"
+export RUN_EXE="${RUN_EXE:-vn_editor.exe}"
 # Space-separated silent flags for .exe/.msi runtime install (patched by
 # make-appimage.sh). Empty → type-specific defaults in _app_install_payload.
 INSTALL_FLAGS="${INSTALL_FLAGS:-}"

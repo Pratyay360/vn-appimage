@@ -8,14 +8,14 @@ export ARCH VERSION
 export OUTPATH=./dist
 export ADD_HOOKS="self-updater.hook"
 export UPINFO="gh-releases-zsync|${GITHUB_REPOSITORY%/*}|${GITHUB_REPOSITORY#*/}|latest|*$ARCH.AppImage.zsync"
-export APPNAME=vlog-now # change the application name here
+export APPNAME=vn-editor # change the application name here
 # Desktop + icon live under AppDir/ (AppDir/APPNAME.desktop, AppDir/APPNAME.svg|.png).
 # quick-sharun picks them up automatically — no DESKTOP/ICON env needed.
 # MAIN_EXE is always required — the .exe filename identifying your app.
 # Used for StartupWMClass (window matching) regardless of which payload
 # strategy you use, and as the launcher's fallback search target when
 # RUN_EXE is not set.
-export MAIN_EXE=VN.exe
+export MAIN_EXE=vn_editor.exe
 
 # Build-time extraction (see the App payload examples below).
 # The installer.exe is a PE executable that embeds a ZIP archive,
