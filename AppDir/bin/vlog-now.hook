@@ -6,7 +6,7 @@
 #
 # Layout: $DATADIR/wine-appimage/{bin,apps/APPNAME,wine-*.AppImage,.target}
 #
-# Replace APPNAME_HERE / MAIN_EXE_HERE / VERSION_HERE placeholders via
+# Replace APPNAME_HERE / MAIN_EXE_HERE / 0.4.2 placeholders via
 # make-appimage.sh's sed patches.
 #
 # Available from AppRun.lib: notify, download, is_cmd, APPDIR,
@@ -19,12 +19,12 @@ else
 fi
 
 # APP
-_APP_NAME="APPNAME_HERE"
-_APP_VER="VERSION_HERE"
+_APP_NAME="vlog-now"
+_APP_VER="0.4.2"
 _APP_REAL="$APPDIR/share/$_APP_NAME"
 _APP_HOME="$DATADIR/wine-appimage/apps/$_APP_NAME"
 export DATADIR
-_APP_BIN="MAIN_EXE_HERE"
+_APP_BIN="VN.exe"
 _APP_ICOD="$DATADIR/applications/$_APP_NAME.desktop"
 _APP_ICON_FIX="$DATADIR/applications/fix_icon_wine_$_APP_NAME.desktop"
 
@@ -46,10 +46,10 @@ else
 fi
 export WINE="$_app_wine_bin"
 
-_APP_WINEPREFIX_SUBDIR="WINEPREFIX_SUBDIR_HERE"
+_APP_WINEPREFIX_SUBDIR=".wine"
 export WINEPREFIX="${WINEPREFIX:-"$_APP_HOME/$_APP_WINEPREFIX_SUBDIR"}"
-export WINEDLLOVERRIDES="${WINEDLLOVERRIDES:-"WINEDLLOVERRIDES_HERE"}"
-export WINEDEBUG="${WINEDEBUG:-"WINEDEBUG_HERE"}"
+export WINEDLLOVERRIDES="${WINEDLLOVERRIDES:-"mscoree,mshtml=;winemenubuilder.exe=d"}"
+export WINEDEBUG="${WINEDEBUG:-"fixme-all"}"
 
 # Shared AppImage: leave WINESERVER unset so wine finds sibling
 # bin/wineserver inside the mount.
@@ -166,7 +166,7 @@ fi
 #
 # Default on — disable with WINEPREFIX_DEDUP=0 in make-appimage.sh or env.
 # ---------------------------------------------------------------------------
-WINEPREFIX_DEDUP="${WINEPREFIX_DEDUP:-WINEPREFIX_DEDUP_HERE}"
+WINEPREFIX_DEDUP="${WINEPREFIX_DEDUP:-1}"
 
 _wineprefix_ensure_template() {
 	[ "$WINEPREFIX_DEDUP" = 1 ] || return 0
@@ -309,7 +309,7 @@ if [ "$REDIRECT_APPDATA" = 1 ]; then
 	fi
 fi
 
-TRICKS="${TRICKS:-TRICKS_HERE}"
+TRICKS="${TRICKS:-}"
 
 if [ -n "$TRICKS" ] && [ ! -f "$WINEPREFIX/.tricks-applied" ]; then
 	echo "Installing winetricks verbs: $TRICKS" 2>&3
@@ -340,11 +340,11 @@ if [ -n "$TRICKS" ] && [ ! -f "$WINEPREFIX/.tricks-applied" ]; then
 	fi
 fi
 
-export INSTALL_URL="${INSTALL_URL:-INSTALL_URL_HERE}"
-export RUN_EXE="${RUN_EXE:-RUN_EXE_HERE}"
+export INSTALL_URL="${INSTALL_URL:-https://fw-download.ubnt.com/data/vn-desktop-app/7d10-windows-0.4.2-bc374063-d84a-42c4-bcb2-eced5b125c95.exe}"
+export RUN_EXE="${RUN_EXE:-VN.exe}"
 # Space-separated silent flags for .exe/.msi runtime install (patched by
 # make-appimage.sh). Empty → type-specific defaults in _app_install_payload.
-INSTALL_FLAGS="${INSTALL_FLAGS:-INSTALL_FLAGS_HERE}"
+INSTALL_FLAGS="${INSTALL_FLAGS:-}"
 
 # Case-insensitive existence (Linux FS vs Windows exe names)
 _app_ci_exists() {

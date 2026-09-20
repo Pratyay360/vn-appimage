@@ -133,6 +133,7 @@ MIMETYPES_NAME="" # example: audio/aac;audio/x-mp3;
 #   AppDir/APPNAME.desktop    AppDir/APPNAME.svg|.png
 #   AppDir/bin/00-get-wine-appimage.hook  — shared wine resolver; do not remove
 # Rename placeholders to the real APPNAME, then patch in place.
+# If files are already renamed, the mv commands are skipped (idempotent).
 mkdir -p "AppDir/bin"
 if [ -f "AppDir/bin/APPNAME.hook" ] && [ "$APPNAME" != "APPNAME" ]; then
 	mv "AppDir/bin/APPNAME.hook" "AppDir/bin/${APPNAME}.hook"
