@@ -17,15 +17,12 @@ export APPNAME=vlog-now # change the application name here
 # RUN_EXE is not set.
 export MAIN_EXE=VN.exe
 
-# Runtime-install flow: INSTALL_URL points at a direct download link (.exe,
-# .msi, .zip, .tar.xz, .tar.gz, or .7z) or a local path inside AppDir/share
-# for a bundled/offline install. RUN_EXE overrides where the launcher
-# looks for the exe after install — it does not replace MAIN_EXE, which
-# must still name the correct .exe filename. Leave both empty/unset to use
-# build-time extraction instead (see the App payload examples below) —
-# this is the default and simplest path for most apps.
-INSTALL_URL="https://fw-download.ubnt.com/data/vn-desktop-app/7d10-windows-0.4.2-bc374063-d84a-42c4-bcb2-eced5b125c95.exe"
-RUN_EXE="VN.exe"
+# Build-time extraction (see the App payload examples below).
+# The installer.exe is a PE executable that embeds a ZIP archive,
+# so 7z needs -tzip to extract it correctly.
+# Leave INSTALL_URL and RUN_EXE empty for this approach.
+INSTALL_URL=
+RUN_EXE=
 
 # Silent/unattended flags for the runtime-install .exe or .msi (space-
 # separated). Used only when INSTALL_URL points at an installer — archives
@@ -90,13 +87,19 @@ MIMETYPES_NAME="" # example: audio/aac;audio/x-mp3;
 #     -O app.zip
 # unzip -q app.zip -d "AppDir/share/$APPNAME"
 
-# --- Runtime Install: bundle the installer, install on first launch ---
-# The installer is a PE executable, not a self-extracting archive,
-# so it must be run through Wine at runtime.
+# --- Example B: installer .exe with embedded zip, extracted at build time ---
+# Some installers are PE executables that embed a ZIP archive containing
+# the actual app files (MSI, DLLs, etc.). Use 7z with -tzip to extract:
 #
-# The installer.exe is bundled inside the AppImage and installed
-# on first launch via the APPNAME.hook's RUNTIME INSTALL flow.
-#
+# mkdir -p "AppDir/share/$APPNAME"
+# wget -q "https://fw-download.ubnt.com/data/vn-desktop-app/7d10-windows-0.4.2-bc374063-d84a-42c4-bcb2-eced5b125c95.exe" \
+#     -O installer.exe
+# 7z x -aos -tzip installer.exe -o"AppDir/share/$APPNAME" >/dev/null 2>&1
+# rm -f installer.exe
+# # Installer exe names often don't match the real Windows binary name —
+# # rename here so it matches MAIN_EXE:
+# # mv "AppDir/share/$APPNAME/some-installed-name.exe" "AppDir/share/$APPNAME/$MAIN_EXE"
+
 # --- Example C: .msi installer, extracted at build time --------------------
 # msiexec-based installers can be extracted directly with 7z too:
 #
