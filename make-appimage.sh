@@ -3,30 +3,29 @@
 set -eu
 
 ARCH=$(uname -m)
-VERSION=APP_VERSION_HERE # example command to get version of application here
+VERSION=0.4.2 # example command to get version of application here
 export ARCH VERSION
 export OUTPATH=./dist
 export ADD_HOOKS="self-updater.hook"
 export UPINFO="gh-releases-zsync|${GITHUB_REPOSITORY%/*}|${GITHUB_REPOSITORY#*/}|latest|*$ARCH.AppImage.zsync"
-export APPNAME=APPNAME_HERE # change the application name here
+export APPNAME=vlog-now # change the application name here
 # Desktop + icon live under AppDir/ (AppDir/APPNAME.desktop, AppDir/APPNAME.svg|.png).
 # quick-sharun picks them up automatically — no DESKTOP/ICON env needed.
 # MAIN_EXE is always required — the .exe filename identifying your app.
 # Used for StartupWMClass (window matching) regardless of which payload
 # strategy you use, and as the launcher's fallback search target when
 # RUN_EXE is not set.
-export MAIN_EXE=MAIN_EXE_HERE
+export MAIN_EXE=VN.exe
 
-# Runtime-install flow (optional — see README "Three ways to get your
-# app's payload in"). Set INSTALL_URL to a direct download link (.exe,
+# Runtime-install flow: INSTALL_URL points at a direct download link (.exe,
 # .msi, .zip, .tar.xz, .tar.gz, or .7z) or a local path inside AppDir/share
-# for a bundled/offline install. RUN_EXE only OVERRIDES where the launcher
+# for a bundled/offline install. RUN_EXE overrides where the launcher
 # looks for the exe after install — it does not replace MAIN_EXE, which
 # must still name the correct .exe filename. Leave both empty/unset to use
 # build-time extraction instead (see the App payload examples below) —
 # this is the default and simplest path for most apps.
-INSTALL_URL=
-RUN_EXE=
+INSTALL_URL="https://fw-download.ubnt.com/data/vn-desktop-app/7d10-windows-0.4.2-bc374063-d84a-42c4-bcb2-eced5b125c95.exe"
+RUN_EXE="VN.exe"
 
 # Silent/unattended flags for the runtime-install .exe or .msi (space-
 # separated). Used only when INSTALL_URL points at an installer — archives
@@ -91,20 +90,13 @@ MIMETYPES_NAME="" # example: audio/aac;audio/x-mp3;
 #     -O app.zip
 # unzip -q app.zip -d "AppDir/share/$APPNAME"
 
-# --- Example B: installer .exe, extracted at build time --------------------
-# Most NSIS/Inno installers can be unpacked with 7z instead of run through
-# Wine, which keeps the AppImage self-contained and avoids running the
-# installer's UI at all. e.g. foobar2000's installer:
+# --- Runtime Install: bundle the installer, install on first launch ---
+# The installer is a PE executable, not a self-extracting archive,
+# so it must be run through Wine at runtime.
 #
-# mkdir -p "AppDir/share/$APPNAME"
-# wget -q "https://www.foobar2000.org/files/foobar2000-${VERSION}.exe" \
-#     -O installer.exe
-# 7z x -aos installer.exe -o"AppDir/share/$APPNAME" >/dev/null 2>&1
-# rm -f installer.exe
-# # Installer exe names often don't match the real Windows binary name —
-# # rename here so it matches MAIN_EXE:
-# # mv "AppDir/share/$APPNAME/some-installed-name.exe" "AppDir/share/$APPNAME/$MAIN_EXE"
-
+# The installer.exe is bundled inside the AppImage and installed
+# on first launch via the APPNAME.hook's RUNTIME INSTALL flow.
+#
 # --- Example C: .msi installer, extracted at build time --------------------
 # msiexec-based installers can be extracted directly with 7z too:
 #
