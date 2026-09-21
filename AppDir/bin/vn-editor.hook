@@ -498,8 +498,15 @@ if [ -n "$INSTALL_URL" ] && [ -n "$RUN_EXE" ]; then
 	unset _run_exe_unix _installed_ver_file _need_install
 fi
 
+# APPIMAGE_EXTRACT_AND_RUN / NO_CLEANUP are intentionally NOT set here.
+# They are user-controlled workarounds (see README) for machines where
+# AppImage FUSE mounting fails — forcing them in the hook would make every
+# launch extract the ~1.2 GB payload to disk and skip cleanup.
+
 # Translate existing host paths to Wine paths. Absolute paths use the default
-# Z:\ mapping (no wine process). Relative/odd paths fall back to winepath.
+# Z:\ mapping (no wine process). Avoid spawning wine-AppImage per arg.
+# Relative/odd paths fall back to winepath.
+
 if [ "$#" -gt 0 ]; then
 	_app_argc=$#
 	while [ "$_app_argc" -gt 0 ]; do
@@ -507,7 +514,6 @@ if [ "$#" -gt 0 ]; then
 		if [ -e "$_app_arg" ]; then
 			case "$_app_arg" in
 				/*)
-					# Z: → /  (Wine default). Avoid spawning wine-AppImage per arg.
 					_app_wp=$(printf 'Z:%s' "$_app_arg" | sed 's|/|\\|g')
 					set -- "$@" "$_app_wp"
 					;;

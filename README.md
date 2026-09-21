@@ -5,6 +5,19 @@
 [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg?style=flat-square)](LICENSE)
 [![Platform](https://img.shields.io/badge/platform-Linux%20x86__64-orange.svg?style=flat-square&logo=linux)](https://github.com/Pratyay360/vn-appimage/releases)
 
+
+
+If it's not opening on your machine for some reason try setting 
+```bash
+APPIMAGE_EXTRACT_AND_RUN=1
+NO_CLEANUP=1
+```
+
+or pass the argument 
+```bash
+./vn.appimage --appimage-extract-and-run
+```
+
 > **⚠️ UNOFFICIAL COMMUNITY PROJECT**  
 > This repository is an independent, community-driven effort to create a portable AppImage wrapper for VN Video Editor on Linux. It is **not** affiliated with, endorsed by, or sponsored by Ubiquiti Labs, VlogNow, or the official developers of VN Video Editor.
 
