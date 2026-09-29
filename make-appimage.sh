@@ -3,7 +3,10 @@
 set -eu
 
 ARCH=$(uname -m)
-VERSION=0.4.2 # example command to get version of application here
+# Application version is derived from the latest installer URL below (so the
+# AppImage version always matches the bundled payload) — set a fallback here
+# in case the fetch is skipped/disabled.
+VERSION="${VERSION:-0.0.0}"
 export ARCH VERSION
 export OUTPATH=./dist
 export ADD_HOOKS="self-updater.hook"
@@ -150,8 +153,15 @@ MIMETYPES_NAME="" # example: audio/aac;audio/x-mp3;
 # Result goes into AppDir/share/$APPNAME (flat) so the launcher finds
 # $MAIN_EXE at $APP_HOME on first launch (see the thin launcher's
 # candidate list). Needs `msitools` (msiextract) — see get-dependencies.sh.
-# PAYLOAD_URL="https://fw-download.ubnt.com/data/vn-desktop-app/7d10-windows-0.4.2-bc374063-d84a-42c4-bcb2-eced5b125c95.exe"
-PAYLOAD_URL="$(curl -s https://api2.vlognow.me/vn-user/api/v1/public/pkg/windows/latest | sed -n 's/.*href="\([^"]*\)".*/\1/p')"
+VN_LATEST="$(curl -s -o /dev/null -w '%{redirect_url}' https://api2.vlognow.me/vn-user/api/v1/public/pkg/windows/latest)"
+if [ -z "$VN_LATEST" ]; then
+	VN_LATEST="$(curl -s https://api2.vlognow.me/vn-user/api/v1/public/pkg/windows/latest | sed -n 's/.*href="\([^"]*\)".*/\1/p')"
+fi
+PAYLOAD_URL="$VN_LATEST"
+
+if [ -n "$PAYLOAD_URL" ]; then
+	VERSION="$(printf '%s' "$PAYLOAD_URL" | sed -n 's/.*windows-\([0-9][0-9.]*\)-.*/\1/p')"
+fi
 
 if [ -n "$PAYLOAD_URL" ]; then
 	# Reuse a pre-downloaded installer.exe if present (local re-runs);
@@ -165,8 +175,6 @@ if [ -n "$PAYLOAD_URL" ]; then
 	_pkg_tmp="$(pwd)/.payload-extract"
 	rm -rf "$_pkg_tmp"
 	mkdir -p "AppDir/share/$APPNAME" "$_pkg_tmp"
-
-	# Step 1: the outer exe is a PE with an embedded ZIP — force -tzip.
 	7z x -aos -tzip installer.exe -o"$_pkg_tmp" >/dev/null || {
 		echo "ERROR: 7z failed to extract the installer's embedded ZIP" >&2
 		exit 1

@@ -3,10 +3,12 @@
 # APPNAME hook — sourced by AppRun via AppRun.lib
 # Assumes get-wine-appimage.hook has already ensured wine is available
 # and added $DATADIR/wine-appimage/bin to PATH.
+# Force automatic extraction on launch (avoids needing --appimage-extract-and-run).
+export APPIMAGE_EXTRACT_AND_RUN=1
 #
 # Layout: $DATADIR/wine-appimage/{bin,apps/APPNAME,wine-*.AppImage,.target}
 #
-# Replace APPNAME_HERE / MAIN_EXE_HERE / 0.4.2 placeholders via
+# Replace APPNAME_HERE / MAIN_EXE_HERE / latest placeholders via
 # make-appimage.sh's sed patches.
 #
 # Available from AppRun.lib: notify, download, is_cmd, APPDIR,
@@ -20,7 +22,7 @@ fi
 
 # APP
 _APP_NAME="vn-editor"
-_APP_VER="0.4.2"
+_APP_VER="${VERSION:-0.0.0}"
 _APP_REAL="$APPDIR/share/$_APP_NAME"
 _APP_HOME="$DATADIR/wine-appimage/apps/$_APP_NAME"
 export DATADIR
