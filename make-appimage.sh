@@ -151,7 +151,7 @@ MIMETYPES_NAME="" # example: audio/aac;audio/x-mp3;
 # $MAIN_EXE at $APP_HOME on first launch (see the thin launcher's
 # candidate list). Needs `msitools` (msiextract) — see get-dependencies.sh.
 # PAYLOAD_URL="https://fw-download.ubnt.com/data/vn-desktop-app/7d10-windows-0.4.2-bc374063-d84a-42c4-bcb2-eced5b125c95.exe"
-PAYLOAD_URL=$(curl -s https://api2.vlognow.me/vn-user/api/v1/public/pkg/windows/latest | sed -n 's/.*href="\([^"]*\)".*/\1/p')
+PAYLOAD_URL="$(curl -s https://api2.vlognow.me/vn-user/api/v1/public/pkg/windows/latest | sed -n 's/.*href="\([^"]*\)".*/\1/p')"
 
 if [ -n "$PAYLOAD_URL" ]; then
 	# Reuse a pre-downloaded installer.exe if present (local re-runs);
