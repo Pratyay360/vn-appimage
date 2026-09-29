@@ -5,7 +5,9 @@ concurrency:
 on:
   schedule:
     - cron: "0 7 */7 * *"
-  workflow_dispatch: {}
+  push:
+  pull_request:
+  workflow_dispatch:
 
 jobs:
   build:
