@@ -7,4 +7,6 @@ ARCH=$(uname -m)
 echo "Installing package dependencies..."
 echo "---------------------------------------------------------------"
 
-pacman -Syu --noconfirm 7zip unzip wget msitools
+pacman -Syu --noconfirm 7zip unzip wget msitools fuse
+
+sudo chmod u+s "$(which fusermount)"

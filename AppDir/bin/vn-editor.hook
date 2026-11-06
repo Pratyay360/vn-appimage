@@ -21,7 +21,7 @@ else
 fi
 
 # APP
-_APP_NAME="vn-editor"
+_APP_NAME="vlog-now-editor"
 _APP_VER="${VERSION:-0.0.0}"
 _APP_REAL="$APPDIR/share/$_APP_NAME"
 _APP_HOME="$DATADIR/wine-appimage/apps/$_APP_NAME"

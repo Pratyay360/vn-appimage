@@ -1,8 +1,6 @@
 name: Clean Workflow Runs
 
 on:
-  schedule:
-    - cron: '0 0 * * 0'
   workflow_dispatch:
     inputs:
       retain_days:
@@ -18,7 +16,7 @@ on:
 
 permissions:
   actions: write
-  contents: read
+  contents: write
 
 jobs:
   clean-runs:
@@ -29,10 +27,22 @@ jobs:
         with:
           token: ${{ github.token }}
           repository: ${{ github.repository }}
-          retain_days: ${{ inputs.retain_days || '0' }}
-          keep_minimum_runs: ${{ inputs.keep_minimum_runs || '0' }}
+          retain_days: ${{ inputs.retain_days || '5' }}
+          keep_minimum_runs: ${{ inputs.keep_minimum_runs || '5' }}
 
-      - name: Squash PR
-        uses: robotology/gh-action-squash@master
+      - name: trash releases
+        run: |
+          gh release list -R "$GITHUB_REPOSITORY" --limit 1000 \
+            --json tagName,isLatest --jq '.[] | select(.isLatest | not) | .tagName' |
+            while read -r tag; do
+              gh release delete "$tag" -y --cleanup-tag -R "$GITHUB_REPOSITORY"
+            done
         env:
           GITHUB_TOKEN: ${{ github.token }}
+      # - name: Delete old releases
+      #   uses: jluo1996/delete-releases-action@v1
+      #   with:
+      #     tag-pattern: '*'
+      #     keep-latest: '5'
+      #     remove-tags: 'true'
+      #     token: ${{github.token}}
