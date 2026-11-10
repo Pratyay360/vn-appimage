@@ -7,15 +7,14 @@
 
 
 
-If it's not opening on your machine for some reason try setting 
+> **FUSE Compatibility**: This AppImage works without legacy `fuse2` as it can use `fuse3` instead. On systems without FUSE or in restricted environments, you can run:
+```bash
+./vn.appimage --appimage-extract-and-run
+```
+or set:
 ```bash
 APPIMAGE_EXTRACT_AND_RUN=1
 NO_CLEANUP=1
-```
-
-or pass the argument 
-```bash
-./vn.appimage --appimage-extract-and-run
 ```
 
 > **⚠️ UNOFFICIAL COMMUNITY PROJECT**  

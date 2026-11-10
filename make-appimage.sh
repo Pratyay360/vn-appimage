@@ -257,7 +257,7 @@ fi
 # Patch hook script
 # VERSION_HERE must be replaced as a whole token (hook has _APP_VER="VERSION_HERE").
 sed -i "s|VERSION_HERE|${VERSION}|g" "AppDir/bin/${APPNAME}.hook"
-sed -i "s|_APP_NAME=\"APPNAME_HERE\"|_APP_NAME=\"${APPNAME}\"|" "AppDir/bin/${APPNAME}.hook"
+sed -i "s|_APP_NAME=.*|_APP_NAME=\"${APPNAME}\"|" "AppDir/bin/${APPNAME}.hook"
 sed -i "s|_APP_BIN=\"MAIN_EXE_HERE\"|_APP_BIN=\"${MAIN_EXE}\"|" "AppDir/bin/${APPNAME}.hook"
 # INSTALL_URL/RUN_EXE/TRICKS patches always run, substituting either the
 # real value or an empty string — never conditionally skipped. Skipping the
